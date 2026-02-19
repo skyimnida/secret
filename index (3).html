@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Confession 💌</title>
+  <style>
+    :root{
+      --bg1:#ffe3f1; --bg2:#fff; --ink:#4a1230; --soft:#b84c7b;
+      --card:#ffffff; --border:#f1b6cf; --shadow:0 16px 44px rgba(0,0,0,.12);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh; display:grid; place-items:center; padding:18px;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--ink);
+      background:
+        radial-gradient(900px 500px at 50% -10%, var(--bg1), transparent),
+        linear-gradient(180deg, #fff7fb, var(--bg2));
+      overflow:hidden;
+    }
+    .card{
+      width:min(640px,100%);
+      background:var(--card);
+      border:2px solid var(--border);
+      border-radius:22px;
+      box-shadow:var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    header{
+      padding:18px 18px 12px;
+      text-align:center;
+      background:linear-gradient(180deg,#fff6fb,#fff);
+      border-bottom:1px solid #ffd3e6;
+    }
+    h1{margin:2px 0 6px; font-size:28px; letter-spacing:.2px;}
+    .sub{margin:0; font-size:14px; color:#7a3b58}
+    .chipRow{
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+      padding:10px 16px 0;
+    }
+    .chip{
+      font-size:12px; padding:8px 12px;
+      border:1px solid #ffd3e6; background:#fff; border-radius:999px;
+      color:#7a3b58;
+    }
+
+    .letter{
+      padding:18px;
+      line-height:1.6;
+      font-size:16px;
+      white-space:pre-wrap;
+      background:#fff;
+    }
+
+    .cta{
+      display:flex; gap:10px; flex-wrap:wrap;
+      padding:14px 18px 0;
+      align-items:center; justify-content:center;
+      background:#fff;
+    }
+
+    .btn{
+      border:2px solid var(--border);
+      background:#fff;
+      color:var(--ink);
+      padding:12px 14px;
+      border-radius:14px;
+      font-weight:800;
+      cursor:pointer;
+      transition:transform .08s ease, box-shadow .12s ease, opacity .2s ease;
+      box-shadow:0 10px 24px rgba(0,0,0,.10);
+      user-select:none;
+    }
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(1px) scale(.99)}
+    .yes{background:#c83a7b; color:#fff; border-color:#c83a7b}
+    .maybe{background:#ffe3f0}
+    .muted{background:#f6f6f6}
+
+    .buttonsWrap{
+      position:relative;
+      padding:14px 18px 18px;
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:10px;
+      background:#fff6fb;
+      border-top:1px solid #ffd3e6;
+      min-height:92px;
+    }
+
+    .footer{
+      text-align:center;
+      font-size:13px;
+      padding:12px 18px 16px;
+      color:#7a3b58;
+      background:#fff6fb;
+    }
+
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:rgba(28,10,18,.88);
+      color:#fff;
+      padding:10px 14px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .2s ease, transform .2s ease;
+      z-index:999;
+    }
+    .toast.show{opacity:1; transform:translateX(-50%) translateY(-4px)}
+
+    /* Floating hearts */
+    .heart{
+      position:fixed;
+      bottom:-30px;
+      font-size:18px;
+      opacity:.75;
+      animation: floatUp linear forwards;
+      z-index:0;
+      pointer-events:none;
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.12));
+    }
+    @keyframes floatUp{
+      from{transform:translateY(0) translateX(0) scale(1); opacity:.85}
+      to{transform:translateY(-110vh) translateX(var(--drift)) scale(1.15); opacity:0}
+    }
+
+    /* Small note */
+    .note{
+      margin-top:6px;
+      font-size:12px;
+      color:#7a3b58;
+      text-align:center;
+      opacity:.9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ✅ MUSIC (IMPORTANT)
+       This needs a direct .mp3 URL (not a YouTube link).
+       Replace the src below with your own MP3 link.
+       Examples of places to host MP3: Google Drive direct link, Dropbox direct link, or any site that gives direct .mp3 URL.
+  -->
+  <audio id="bgm" preload="auto" loop>
+    <source src="PASTE_YOUR_DIRECT_MP3_LINK_HERE.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="card" id="card">
+    <header>
+      <h1 id="title">Hi, <span id="theirName">Crush</span>… 💗</h1>
+      <p class="sub" id="sub">Open this when you’re free ✨</p>
+      <div class="chipRow">
+        <div class="chip">From: <b id="myName">Jayze</b></div>
+        <div class="chip">Mood: soft + sincere</div>
+        <div class="chip" id="musicChip">Music: tap “Play Music”</div>
+      </div>
+    </header>
+
+    <div class="letter" id="letter">
+Hi…
+
+I’ve been wanting to tell you this for a while.
+The truth is… I like you. Like, really.
+
+I like the way you make ordinary moments feel softer.
+I like how my day feels lighter when you’re around.
+
+I’m not here to rush you.
+I just wanted you to know what’s been in my heart.
+
+So… can I be someone who gets to care for you a little more?
+    </div>
+
+    <div class="cta">
+      <button class="btn muted" id="playBtn">▶ Play Music</button>
+      <button class="btn muted" id="pauseBtn">⏸ Pause</button>
+      <div class="note">Music will start after a tap (phone/browser rule).</div>
+    </div>
+
+    <div class="buttonsWrap" id="buttons">
+      <button class="btn yes" id="yesBtn">YES 💞</button>
+      <button class="btn maybe" id="maybeBtn">Maybe 🙂</button>
+      <button class="btn" id="noBtn">Not yet 🙈</button>
+    </div>
+
+    <div class="footer" id="footer">Tap a button 💌</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // ====== CUSTOMIZE NAMES HERE ======
+    // Change these two:
+    const MY_NAME = "Jayze";
+    const THEIR_NAME = "Crush";
+    // =================================
+
+    const myNameEl = document.getElementById("myName");
+    const theirNameEl = document.getElementById("theirName");
+    myNameEl.textContent = MY_NAME;
+    theirNameEl.textContent = THEIR_NAME;
+
+    const title = document.getElementById("title");
+    const sub = document.getElementById("sub");
+    const letter = document.getElementById("letter");
+    const footer = document.getElementById("footer");
+    const musicChip = document.getElementById("musicChip");
+
+    const yesBtn = document.getElementById("yesBtn");
+    const maybeBtn = document.getElementById("maybeBtn");
+    const noBtn = document.getElementById("noBtn");
+    const buttons = document.getElementById("buttons");
+
+    const toast = document.getElementById("toast");
+    const bgm = document.getElementById("bgm");
+    const playBtn = document.getElementById("playBtn");
+    const pauseBtn = document.getElementById("pauseBtn");
+
+    let answered = false;
+
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=>toast.classList.remove("show"), 1400);
+    }
+
+    function lock(){
+      answered = true;
+      [yesBtn, maybeBtn, noBtn].forEach(b=>{
+        b.disabled = true;
+        b.style.opacity = .75;
+        b.style.cursor = "default";
+      });
+      footer.textContent = "Thank you for answering 🤍";
+    }
+
+    // Playful moving "Not yet" button BEFORE answer
+    function moveNo(){
+      if (answered) return;
+
+      buttons.style.position = "relative";
+      noBtn.style.position = "absolute";
+
+      const pad = 8;
+      const panelRect = buttons.getBoundingClientRect();
+      const btnRect = noBtn.getBoundingClientRect();
+
+      const maxX = Math.max(pad, panelRect.width - btnRect.width - pad);
+      const maxY = Math.max(pad, panelRect.height - btnRect.height - pad);
+
+      const x = Math.floor(Math.random() * (maxX - pad + 1)) + pad;
+      const y = Math.floor(Math.random() * (maxY - pad + 1)) + pad;
+
+      noBtn.style.left = x + "px";
+      noBtn.style.top = y + "px";
+    }
+
+    noBtn.addEventListener("mouseenter", moveNo);
+    noBtn.addEventListener("touchstart", (e)=>{
+      if (!answered){
+        e.preventDefault();
+        moveNo();
+        showToast("Ay 🙈");
+      }
+    }, {passive:false});
+
+    // ====== MUSIC ======
+    async function tryPlay(){
+      try {
+        await bgm.play();
+        showToast("Music on 🎶");
+        musicChip.textContent = "Music: playing 🎶";
+      } catch (e) {
+        showToast("Add a direct .mp3 link first 🙂");
+      }
+    }
+    function pauseMusic(){
+      bgm.pause();
+      showToast("Paused ⏸");
+      musicChip.textContent = "Music: paused ⏸";
+    }
+    playBtn.addEventListener("click", tryPlay);
+    pauseBtn.addEventListener("click", pauseMusic);
+
+    // Optional: start music on first tap anywhere (nice for mobile)
+    document.addEventListener("click", () => {
+      if (bgm.paused && !answered) {
+        // If src is placeholder, this will fail and show toast only if they pressed Play.
+        // So we won't force it here.
+      }
+    }, { once: true });
+
+    // ====== Hearts animation ======
+    const heartChars = ["💗","💖","💘","💝","💕"];
+    function spawnHeart(){
+      const h = document.createElement("div");
+      h.className = "heart";
+      h.textContent = heartChars[Math.floor(Math.random()*heartChars.length)];
+      const left = Math.random()*100;
+      const drift = (Math.random()*140 - 70).toFixed(0) + "px";
+      const dur = (8 + Math.random()*5).toFixed(2) + "s";
+      const size = (14 + Math.random()*18).toFixed(0) + "px";
+
+      h.style.left = left + "vw";
+      h.style.setProperty("--drift", drift);
+      h.style.animationDuration = dur;
+      h.style.fontSize = size;
+
+      document.body.appendChild(h);
+      setTimeout(()=>h.remove(), (parseFloat(dur)*1000)+200);
+    }
+    let heartTimer = setInterval(spawnHeart, 900);
+
+    // ====== Button outcomes ======
+    yesBtn.addEventListener("click", async ()=>{
+      lock();
+      title.innerHTML = `You said YES 💞`;
+      sub.textContent = "You just made my heart very, very happy. 🌸";
+      letter.textContent =
+`I’m smiling while reading this.
+
+Thank you for choosing me.
+I promise to treat you gently,
+and make you feel loved in the simplest ways.
+
+Now… when do we go on our first date? 😉`;
+
+      // try to play music after a tap
+      await tryPlay();
+
+      showToast("Yay!! 💗");
+      footer.textContent = "Screenshot this and send it to me? 🥺";
+      clearInterval(heartTimer);
+      heartTimer = setInterval(spawnHeart, 450);
+    });
+
+    maybeBtn.addEventListener("click", ()=>{
+      lock();
+      title.innerHTML = `You said MAYBE 🙂`;
+      sub.textContent = "That’s okay. Slow is still progress. ✨";
+      letter.textContent =
+`Thank you for being honest.
+
+We don’t have to rush.
+I’d rather earn a sure “yes” than force anything.
+
+If you’re okay with it…
+can we keep getting to know each other? 🌙`;
+      showToast("Take your time 🙂");
+    });
+
+    // If they manage to click it (desktop), respect it.
+    noBtn.addEventListener("click", ()=>{
+      lock();
+      title.innerHTML = `You said NOT YET 🙈`;
+      sub.textContent = "I understand. Your comfort comes first. 🤍";
+      letter.textContent =
+`That’s okay.
+
+I’m glad I said the truth,
+and I’m even more glad you chose honesty.
+
+No pressure from me.
+Your pace matters.
+
+Take care, okay? 🤍`;
+      showToast("Okay 🤍");
+    });
+  </script>
+</body>
+</html>
